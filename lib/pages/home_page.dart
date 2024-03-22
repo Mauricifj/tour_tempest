@@ -1,63 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:tour_tempest/models/city_model.dart';
-import 'package:tour_tempest/widgets/city_list.dart';
 
-import '../models/weather_model.dart';
+import '../controllers/city_controller.dart';
+import '../dependency_injection.dart';
+import '../models/city_model.dart';
+import '../widgets/city_list.dart';
 import '../widgets/search_bar_widget.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.controller});
+
+  final CityController controller;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<CityModel> cities = [
-    const CityModel(
-      'Silverstone (UK)',
-      current: WeatherModel('broken clouds', '04n'),
-      forecast: [],
-    ),
-    const CityModel(
-      'São Paulo (Brazil)',
-      current: WeatherModel('light rain', '10d'),
-      forecast: [],
-    ),
-    const CityModel(
-      'Melbourne (Australia)',
-      current: WeatherModel('few clouds', '02n'),
-      forecast: [],
-    ),
-    const CityModel(
-      'Monte Carlo (Monaco)',
-      current: WeatherModel('thunderstorm', '11d'),
-      forecast: [],
-    ),
-  ];
-
-  List<CityModel> filteredCities = [];
+  final List<CityModel> _cities = [];
+  List<CityModel> _filteredCities = [];
 
   @override
   void initState() {
     super.initState();
-    filteredCities.addAll(cities);
+
+    final controller = serviceLocator<CityController>();
+    final cities = controller.cities;
+    _cities.addAll(cities);
+    _filteredCities.addAll(cities);
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Current Weather'),
       ),
       body: Column(
         children: [
+          const SizedBox(height: 16),
           SearchBarWidget(
             hint: 'Search by city name',
             onChanged: filterCities,
           ),
+          const SizedBox(height: 16),
           CityList(
-            cities: filteredCities,
+            cities: _filteredCities,
           ),
         ],
       ),
@@ -67,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   void filterCities(String query) {
     setState(
       () {
-        filteredCities = cities
+        _filteredCities = _cities
             .where(
               (city) => city.name.toLowerCase().contains(query.toLowerCase()),
             )

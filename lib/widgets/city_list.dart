@@ -14,9 +14,13 @@ class CityList extends StatelessWidget {
         final city = cities[index];
 
         return ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
           title: Text(city.name),
-          subtitle: Text(city.current.description),
-          leading: Image.asset('assets/icons/${city.current.icon}.png'),
+          subtitle: Text(city.weather.description),
+          leading: Image.asset('assets/icons/${city.weather.icon}.png'),
         );
       },
       separatorBuilder: (_, __) => const Divider(),
