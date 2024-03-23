@@ -5,6 +5,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:tour_tempest/controllers/city_controller.dart';
 import 'package:tour_tempest/models/available_cities.dart';
 import 'package:tour_tempest/models/city_model.dart';
+import 'package:tour_tempest/models/city_model_result.dart';
 
 import '../mocks/json_encoded_strings.dart';
 import '../mocks/weather_service_mock.dart';
@@ -13,12 +14,13 @@ void main() {
   group('City Controller => ', () {
     final weatherServiceMock = WeatherServiceMock();
     final city = CityModel.fromMap(json.decode(jsonEncodedCity));
+    final result = CityModelResult(model: city);
 
     test('Should pre cache city models', () async {
       when(
         () => weatherServiceMock.fetch(any()),
       ).thenAnswer(
-        (_) async => city,
+        (_) async => result,
       );
 
       final sut = CityController(weatherServiceMock);

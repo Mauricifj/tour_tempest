@@ -8,10 +8,21 @@ class CityController {
   final WeatherService weatherService;
   List<CityModel> cities = [];
 
-  Future<void> preCacheCities() async {
+  Future<String?> preCacheCities() async {
     for (var city in AvailableCities.values) {
-      final cityModel = await weatherService.fetch(city.searchName);
-      cities.add(cityModel.copyWith(name: city.displayName));
+      final cityModelResult = await weatherService.fetch(city.searchName);
+
+      final error = cityModelResult.error ;
+      if (error != null) {
+        return error;
+      }
+
+      final cityModel = cityModelResult.model;
+      if (cityModel != null) {
+        cities.add(cityModel.copyWith(name: city.displayName));
+      }
     }
+
+    return null;
   }
 }

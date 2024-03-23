@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/city_model.dart';
+import '../models/city_model_result.dart';
 
 class WeatherService {
   const WeatherService(this._dioClient, this.sharedPreferences);
@@ -22,29 +23,36 @@ class WeatherService {
     return '$baseUrl/forecast?q=$city&appid=$apiKey&units=metric';
   }
 
-  Future<CityModel> fetch(String cityName) async {
+  Future<CityModelResult> fetch(String cityName) async {
     final storedData = sharedPreferences.getString(cityName);
     if (storedData != null) {
       final map = json.decode(storedData);
       final city = CityModel.fromMap(map);
-      return city;
+      return CityModelResult(model: city);
     }
 
-    final responseCurrentWeather =
-        await _dioClient.get(currentWeatherUrl(cityName));
-    final responseForecast = await _dioClient.get(forecastUrl(cityName));
+    try {
+      final responseCurrentWeather =
+          await _dioClient.get(currentWeatherUrl(cityName));
+      final responseForecast = await _dioClient.get(forecastUrl(cityName));
 
-    if (responseCurrentWeather.statusCode == 200 &&
-        responseForecast.statusCode == 200) {
-      final currentWeatherMap = responseCurrentWeather.data;
-      final forecastMap = responseForecast.data;
-      final cityModel = CityModel.fromMaps(currentWeatherMap, forecastMap);
-      final cityJson = json.encode(cityModel.toMap());
+      if (responseCurrentWeather.statusCode == 200 &&
+          responseForecast.statusCode == 200) {
+        final currentWeatherMap = responseCurrentWeather.data;
+        final forecastMap = responseForecast.data;
+        final cityModel = CityModel.fromMaps(currentWeatherMap, forecastMap);
+        final cityJson = json.encode(cityModel.toMap());
 
-      sharedPreferences.setString(cityName, cityJson);
-      return cityModel;
-    } else {
-      throw Exception('Failed to fetch weather data');
+        sharedPreferences.setString(cityName, cityJson);
+        return CityModelResult(model: cityModel);
+      } else {
+        return CityModelResult(
+          error:
+              'We are having problems communicating with the Open Weather API',
+        );
+      }
+    } catch (e) {
+      return CityModelResult(error: 'Sorry, something went wrong...');
     }
   }
 }

@@ -13,12 +13,28 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  String? errorMessage;
+
   @override
   void initState() {
     super.initState();
+    preCacheCities();
+  }
+
+  void preCacheCities() {
+    setState(() {
+      errorMessage = null;
+    });
 
     widget.controller.preCacheCities().then(
-      (_) {
+      (error) {
+        if (error != null) {
+          setState(() {
+            errorMessage = error;
+          });
+          return;
+        }
+
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => HomePage(
@@ -32,10 +48,33 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
+    return Scaffold(
+      body: errorMessage != null ? buildErrorMessage() : buildLoading(),
     );
+  }
+
+  Widget buildErrorMessage() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          errorMessage!,
+          textAlign: TextAlign.center,
+        ),
+        const Text(
+          'Verify your internet connection or try again later',
+          textAlign: TextAlign.center,
+        ),
+        TextButton(
+          onPressed: preCacheCities,
+          child: const Text('Try again'),
+        ),
+      ],
+    );
+  }
+
+  Widget buildLoading() {
+    return const Center(child: CircularProgressIndicator());
   }
 }
