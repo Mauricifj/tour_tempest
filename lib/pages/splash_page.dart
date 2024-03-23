@@ -17,18 +17,14 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
 
-    Future.delayed(const Duration(seconds: 3)).then(
+    widget.controller.preCacheCities().then(
       (_) {
-        widget.controller.preCacheCities().then(
-          (_) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => HomePage(
-                  controller: widget.controller,
-                ),
-              ),
-            );
-          },
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => HomePage(
+              controller: widget.controller,
+            ),
+          ),
         );
       },
     );
