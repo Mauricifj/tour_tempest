@@ -16,8 +16,16 @@ Tour Tempest is a weather tracking app designed specifically for rock'n'roll ban
 
 ## Technologies Used
 
-- Flutter: Cross-platform framework for building mobile applications.
+- [Flutter](https://flutter.dev/): Cross-platform framework for building mobile applications.
 - [OpenWeather API](https://openweathermap.org/): Integration with OpenWeather API to fetch real-time weather data.
+
+## Packages Used
+
+- [dio](https://pub.dev/packages/dio): A powerful HTTP networking package for Dart/Flutter.
+- [Mocktail](https://pub.dev/packages/mocktail): Mocktail focuses on providing a familiar, simple API for creating mocks in Dart (with null-safety) without the need for manual mocks or code generation.
+- [shared_preferences](https://pub.dev/packages/shared_preferences): Wraps platform-specific persistent storage for simple data.
+- [auto_injector](https://pub.dev/packages/auto_injector): Automatic Dependency injection system without build_runner.
+- [intl](https://pub.dev/packages/intl): Provides internationalization and localization facilities, including message translation, plurals and genders, date/number formatting and parsing, and bidirectional text.
 
 ## Installation
 
