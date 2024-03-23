@@ -11,7 +11,7 @@ class CityController {
   Future<void> preCacheCities() async {
     for (var city in AvailableCities.values) {
       final cityModel = await weatherService.fetch(city.searchName);
-      cities.add(cityModel);
+      cities.add(cityModel.copyWith(name: city.displayName));
     }
   }
 }

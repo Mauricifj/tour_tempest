@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../models/city_model.dart';
+import '../pages/forecast_page.dart';
+import 'city_list_item.dart';
 
 class CityList extends StatelessWidget {
   const CityList({super.key, required this.cities});
@@ -13,19 +15,24 @@ class CityList extends StatelessWidget {
       itemBuilder: (_, index) {
         final city = cities[index];
 
-        return ListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          title: Text(city.name),
-          subtitle: Text(city.weather.description),
-          leading: Image.asset('assets/icons/${city.weather.icon}.png'),
+        return CityListItem(
+          city: city,
+          onTap: () => onTapItem(city, context),
         );
       },
       separatorBuilder: (_, __) => const Divider(),
       itemCount: cities.length,
       shrinkWrap: true,
+    );
+  }
+
+  void onTapItem(CityModel city, BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ForecastPage(
+          city: city,
+        ),
+      ),
     );
   }
 }

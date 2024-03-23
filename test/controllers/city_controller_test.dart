@@ -24,8 +24,17 @@ void main() {
       final sut = CityController(weatherServiceMock);
       await sut.preCacheCities();
 
-      expect(sut.cities.length, AvailableCities.values.length);
-      expect(sut.cities.first.name, 'London');
+      final cityNames = sut.cities.map((e) => e.name).toList();
+      final availableCityNames =
+          AvailableCities.values.map((e) => e.displayName).toList();
+
+      verify(
+        () => weatherServiceMock.fetch(any()),
+      ).called(
+        availableCityNames.length,
+      );
+      expect(cityNames.length, availableCityNames.length);
+      expect(cityNames, availableCityNames);
     });
   });
 }

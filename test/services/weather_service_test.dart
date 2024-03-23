@@ -13,22 +13,17 @@ import '../mocks/open_weather_api_responses.dart';
 void main() {
   group('Weather Service => ', () {
     final dio = DioMock();
-
     const city = 'London';
-    const currentWeatherUrl =
-        '${WeatherService.baseUrl}/weather?q=$city&appid=${WeatherService.apiKey}';
-    const forecastUrl =
-        '${WeatherService.baseUrl}/forecast?q=$city&appid=${WeatherService.apiKey}';
 
     setUp(() {
-      when(() => dio.get(currentWeatherUrl)).thenAnswer(
+      when(() => dio.get(WeatherService.currentWeatherUrl(city))).thenAnswer(
         (_) async => Response(
           requestOptions: RequestOptions(),
           statusCode: 200,
           data: json.decode(currentWeatherResponse),
         ),
       );
-      when(() => dio.get(forecastUrl)).thenAnswer(
+      when(() => dio.get(WeatherService.forecastUrl(city))).thenAnswer(
         (_) async => Response(
           requestOptions: RequestOptions(),
           statusCode: 200,
@@ -43,17 +38,15 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       final sut = WeatherService(dio, sharedPreferences);
       final result = await sut.fetch(city);
-      final date = DateTime.fromMillisecondsSinceEpoch(1711130400);
+      final date = DateTime.tryParse('2024-03-22 18:00:00') ??
+          DateTime.fromMillisecondsSinceEpoch(1711130400);
 
       expect(result.name, city);
       expect(result.weather.icon, '04d');
       expect(result.weather.description, 'overcast clouds');
       expect(result.forecast.first.weather.icon, '04d');
       expect(result.forecast.first.weather.description, 'overcast clouds');
-      expect(result.forecast.first.date.day, date.day);
-      expect(result.forecast.first.date.month, date.month);
-      expect(result.forecast.first.date.year, date.year);
-      expect(result.forecast.first.date, date);
+      expect(result.forecast.first.date.toUtc(), date.toUtc());
     });
 
     test(
@@ -63,17 +56,15 @@ void main() {
       final sharedPreferences = await SharedPreferences.getInstance();
       final sut = WeatherService(dio, sharedPreferences);
       final result = await sut.fetch(city);
-      final date = DateTime.fromMillisecondsSinceEpoch(1711130400);
+      final date = DateTime.tryParse('2024-03-22 18:00:00') ??
+          DateTime.fromMillisecondsSinceEpoch(1711130400);
 
       expect(result.name, city);
       expect(result.weather.icon, '04d');
       expect(result.weather.description, 'overcast clouds');
       expect(result.forecast.first.weather.icon, '04d');
       expect(result.forecast.first.weather.description, 'overcast clouds');
-      expect(result.forecast.first.date.day, date.day);
-      expect(result.forecast.first.date.month, date.month);
-      expect(result.forecast.first.date.year, date.year);
-      expect(result.forecast.first.date, date);
+      expect(result.forecast.first.date.toUtc(), date.toUtc());
     });
   });
 }

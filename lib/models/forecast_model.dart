@@ -22,14 +22,16 @@ class ForecastModel {
     };
 
     return ForecastModel(
-      DateTime.fromMillisecondsSinceEpoch(map['dt']),
+      map.containsKey('date')
+          ? DateTime.parse(map['date'])
+          : DateTime.parse(map['dt_txt']),
       WeatherModel.fromMap(weatherMap),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'dt': date.millisecondsSinceEpoch.abs(),
+      'date': date.toUtc().toIso8601String(),
       'weather': weather.toMap(),
     };
   }

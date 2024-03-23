@@ -44,4 +44,16 @@ class CityModel {
       'forecast': forecast.map((e) => e.toMap()).toList(),
     };
   }
+
+  CityModel copyWith({
+    String? name,
+    WeatherModel? weather,
+    List<ForecastModel>? forecast,
+  }) {
+    return CityModel(
+      name: name ?? this.name,
+      weather: weather ?? this.weather,
+      forecast: forecast ?? this.forecast,
+    );
+  }
 }
