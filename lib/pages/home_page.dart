@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../controllers/city_controller.dart';
-import '../dependency_injection.dart';
 import '../models/city_model.dart';
 import '../widgets/city_list.dart';
 import '../widgets/search_bar_widget.dart';
@@ -23,8 +22,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    final controller = serviceLocator<CityController>();
-    final cities = controller.cities;
+    final cities = widget.controller.cities;
     _cities.addAll(cities);
     _filteredCities.addAll(cities);
   }
